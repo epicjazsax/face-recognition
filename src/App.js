@@ -13,8 +13,8 @@ const returnClarifaiJSONRequest = (imageUrl) => {
   const PAT = 'f9a6dca9cc4b433f9d0a132d31a5b73d';
   // Specify the correct user_id/app_id pairings
   // Since you're making inferences outside your app's scope
-  const USER_ID = 'justinzak';       
-  const APP_ID = 'main';
+  const USER_ID = 'justinzak';
+  const APP_ID = 'face-recognition';
   // Change these to whatever model and image URL you want to use
   const MODEL_ID = 'face-detection';
   const IMAGE_URL = imageUrl;
@@ -52,7 +52,7 @@ function App() {
   const [input, setInput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [box, setBox] = useState({});
-  const [route, setRoute] = useState('signin');
+  const [route, setRoute] = useState('home');
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState({
     id: '',
@@ -74,14 +74,14 @@ function App() {
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
+    const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
     return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
+      left: clarifaiFace.left_col * width,
+      top: clarifaiFace.top_row * height,
+      right: width - (clarifaiFace.right_col * width),
+      bottom: height - (clarifaiFace.bottom_row * height)
     }
   }
 
@@ -96,10 +96,9 @@ function App() {
   const onSubmit = () => {
     setImageUrl(input);
 
-    fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", returnClarifaiJSONRequest(input))
+    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", returnClarifaiJSONRequest(input))
     .then(response => response.json())
       .then(response => {
-        console.log('hi', response)
         if (response) {
           fetch('http://localhost:3000/image', {
             method: 'put',
@@ -112,7 +111,7 @@ function App() {
             .then(count => {
               (Object.assign(user, { entries: count }))
             })
-        }
+          }
         displayFaceBox(calculateFaceLocation(response))
       })
       .catch(err => console.log(err));
@@ -125,7 +124,7 @@ function App() {
       <Logo />
       <Rank />
       <ImageLinkForm onInputChange={onInputChange} onSubmit={onSubmit} />
-      <FaceRecognition imageUrl={imageUrl} />
+      <FaceRecognition box={box} imageUrl={imageUrl} />
     </div>
   );
 }
