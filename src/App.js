@@ -5,6 +5,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import SignIn from './components/SignIn/SignIn';
 import { useState } from 'react';
 
 
@@ -20,15 +21,15 @@ const returnClarifaiJSONRequest = (imageUrl) => {
   const IMAGE_URL = imageUrl;
 
   const raw = JSON.stringify({
-    "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
+    'user_app_id': {
+        'user_id': USER_ID,
+        'app_id': APP_ID
     },
-    "inputs": [
+    'inputs': [
         {
-            "data": {
-                "image": {
-                    "url": IMAGE_URL
+            'data': {
+                'image': {
+                    'url': IMAGE_URL
                 }
             }
         }
@@ -96,7 +97,7 @@ function App() {
   const onSubmit = () => {
     setImageUrl(input);
 
-    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", returnClarifaiJSONRequest(input))
+    fetch('https://api.clarifai.com/v2/models/face-detection/outputs', returnClarifaiJSONRequest(input))
     .then(response => response.json())
       .then(response => {
         if (response) {
@@ -118,8 +119,9 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <ParticlesBg type="square" bg={true} />
+    <div className='App'>
+      <ParticlesBg type='square' bg={true} />
+      <SignIn />
       <Navigation />
       <Logo />
       <Rank />
