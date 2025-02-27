@@ -7,7 +7,7 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 const returnClarifaiJSONRequest = (imageUrl) => {
@@ -72,7 +72,13 @@ function App() {
       entries: data.entries,
       joined: data.joined
     })
-  }
+  };
+
+  // useEffect(() => {
+  //   fetch('http://localhost:3000')
+  //     .then(res => res.json())
+  //     .then(console.log)
+  // }, [])
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -135,14 +141,14 @@ function App() {
       { route === 'home' 
         ? <div>
           <Logo />
-          <Rank />
+          <Rank name={user.name} entries={user.entries} />
           <ImageLinkForm onInputChange={onInputChange} onSubmit={onSubmit} />
           <FaceRecognition box={box} imageUrl={imageUrl} />
         </div>
         : (
           route === 'signin'
-            ? <SignIn onRouteChange={onRouteChange} />
-            : <Register onRouteChange={onRouteChange} />
+            ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} />
+            : <Register onRouteChange={onRouteChange} loadUser={loadUser} />
         )
       }
     </div>
